@@ -10,7 +10,7 @@ import {
   decorateTemplateAndTheme,
   waitForLCP,
   loadBlocks,
-  loadCSS,
+  loadCSS, parseBricksList,
 } from './aem.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
@@ -70,11 +70,25 @@ export function decorateMain(main) {
 }
 
 /**
+ * Loads main
+ * @param {Element} doc The container element
+ */
+async function loadMain(doc) {
+  const page = 'index';
+  const markup = await (await fetch(`http://localhost:8787/api/v1/translate?source=https://www.aem.live/${page}.plain.html`))
+    .text();
+  doc.querySelector('main').innerHTML = markup;
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  await loadMain(doc);
+  const bricksList = parseBricksList(doc);
+  console.log('bricksList', bricksList);
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {

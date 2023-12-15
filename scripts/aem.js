@@ -128,6 +128,16 @@ function sampleRUM(checkpoint, data = {}) {
   }
 }
 
+function parseBricksList(doc) {
+  const comment = doc.querySelector('main').lastChild.textContent.trim();
+  let bricks = [];
+  if (comment.startsWith('brickList=')) {
+    bricks = comment.replace('brickList=', '').split(',');
+    doc.querySelector('main').lastChild.remove();
+  }
+  return bricks;
+}
+
 /**
  * Setup block utils.
  */
@@ -694,6 +704,7 @@ export {
   loadFooter,
   loadHeader,
   loadScript,
+  parseBricksList,
   readBlockConfig,
   sampleRUM,
   setup,
